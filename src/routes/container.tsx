@@ -7,7 +7,7 @@ import {
     BrowserRouter as Router, Switch, Route, Redirect,
 } from "react-router-dom";
 //Screens
-import FirebaseExample from "./record";
+import Home from "./home";
 import News from "./news";
 //Custom components
 import CustomAppBar from '../components/appbar';
@@ -55,7 +55,7 @@ function App({ t }: any) {
                         <CustomAppBar title={window.location.pathname} onMenuPress={handleDrawer} drawerOpened={drawer} />
                         <ContentView>
                             <Switch>
-                                <Route path="/" exact component={FirebaseExample} />
+                                <Route path="/" exact component={Home} />
                                 <Route path="/news" exact component={News} />
                             </Switch>
                         </ContentView>

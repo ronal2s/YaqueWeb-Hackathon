@@ -55,8 +55,8 @@ const Title = styled.h1((props: ITitle) => ({
     textAlign: props.centered ? "center" : "left",
     fontWeight: props.bold ? 'bold' : 400,
     color: props.color ? props.color : "black",
-    margin: props.margin ? `${props.margin}px` : 0,
-    fontSize: props.size ? `${props.size}px` : 22,
+    margin: props.margin ? props.margin : 0,
+    fontSize: props.size ? props.size : 22,
     ":hover": props.clickeable ? {
         color: COLORS.PRIMARY,
         cursor: "pointer"
