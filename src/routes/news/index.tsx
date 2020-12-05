@@ -17,8 +17,26 @@ function News({ t }: any) {
 
 
     useEffect(() => {
-        fetchData();
+        // fetchData();
+        observerNews();
     }, []);
+
+    const observerNews = async () => {
+        FirestoreService.getDb().collection(Collections.NEWS).doc(Documents.DATA).onSnapshot(observer => {
+            if (observer.data()) {
+                console.log("Datos obs: ", observer.data())
+                //@ts-ignore
+                const keysObject = Object.keys(observer.data());
+                const auxObjects = { ...observer.data() };
+                let _data: any = [];
+                keysObject.forEach(key => {
+                    //@ts-ignore
+                    _data.push(auxObjects[key])
+                })
+                setData(_data)
+            }
+        })
+    }
 
     const fetchData = async () => {
         setLoading(true);
