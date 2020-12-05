@@ -2,6 +2,7 @@ import firebase from 'firebase/app';
 import moment from "moment";
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/storage";
 
 import { Collections, Documents } from "../utils/enums";
 import { IFNews } from '../utils/interfaces';
@@ -39,6 +40,34 @@ export const getData = async () => {
 export const authenticate = (email: string, password: string) => {
     return firebase.auth().signInWithEmailAndPassword(email, password);
 };
+
+export const pushNewsv2 = async (post: IFNews) => {
+    let obj = await (await db.collection(Collections.NEWS).doc(Documents.DATA).get()).data();
+    let code = + new Date();
+    let _post = { ...post };
+    // const storageUser = firebase.storage().ref(`news`);
+    const storageUser = firebase.storage().ref(`news/${code}`);
+
+    if (post.uri !== "") {
+        const img = await storageUser.putString(post.uri, "data_url");
+        const imageUrl = await img.ref.getDownloadURL();
+        _post.uri = imageUrl;
+    }
+    if (!obj) {
+        obj = []
+    } else {
+        const keysObject = Object.keys(obj);
+        const auxObjects = { ...obj };
+        obj = [];
+        keysObject.forEach(key => {
+            //@ts-ignore
+            obj.push(auxObjects[key])
+        })
+    }
+    obj.push(_post);
+    return db.collection(Collections.NEWS).doc(Documents.DATA).set({ ...obj });
+
+}
 
 export const pushNews = async (post: IFNews) => {
     let obj = await (await db.collection(Collections.NEWS).doc(Documents.DATA).get()).data();

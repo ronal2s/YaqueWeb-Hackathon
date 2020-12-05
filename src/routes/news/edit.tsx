@@ -26,11 +26,12 @@ function EditNews(props: IEditNews) {
     const onPushNews = async () => {
         setLoading(true);
         try {
-            await FirestoreService.pushNews(form);
+            await FirestoreService.pushNewsv2(form);
             setForm({ ...form, title: "", body: "", uri: "" });
             toast.success("Noticia enviada");
         } catch (error) {
             toast.error(error.message);
+            console.log(error.message)
         }
         setLoading(false);
     }
@@ -49,7 +50,7 @@ function EditNews(props: IEditNews) {
                 </Grid>
             </DialogContent>
             <DialogActions>
-                <Button color="secondary" >Cerrar</Button>
+                <Button color="secondary" onClick={props.onClose} >Cerrar</Button>
                 <Button disabled={loading} color="primary" variant="contained" onClick={onPushNews} >
                     {!loading && "Lanzar"}
                     {loading && <CircularProgress color="inherit" size={18} />}

@@ -72,7 +72,7 @@ function News({ t }: any) {
                             }}
                             columns={[
                                 { title: t("Título"), field: "title" },
-                                { title: t("Cuerpo"), field: "body" },
+                                { title: t("Cuerpo"), field: "body", render: (item) => (item as any).body.substring(0,100)+"..." },
                                 { title: t("Fecha"), field: "date" },
                                 // { title: t("Calle"), field: "street" },
                                 // { title: t("¿Primera vez?"), field: "firstTime" },
