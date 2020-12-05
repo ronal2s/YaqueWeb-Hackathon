@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 //Screens
 import FirebaseExample from "./record";
+import News from "./news";
 //Custom components
 import CustomAppBar from '../components/appbar';
 import CustomLink from '../components/listItem';
@@ -47,6 +48,7 @@ function App({ t }: any) {
                         <List>
                             <CustomLink title={t("Inicio")} icon="mail" iconColor="white" nameView="/" actualRoute={actualRoute} onClick={onClickItem} />
                             <CustomLink title={t("Ejemplo")} icon="mail" iconColor="white" nameView="/reports" actualRoute={actualRoute} onClick={onClickItem} />
+                            <CustomLink title={t("Noticias")} icon="mail" iconColor="white" nameView="/news" actualRoute={actualRoute} onClick={onClickItem} />
                         </List>
                     </CustomDrawer>
                     <NavigationView>
@@ -54,6 +56,7 @@ function App({ t }: any) {
                         <ContentView>
                             <Switch>
                                 <Route path="/" exact component={FirebaseExample} />
+                                <Route path="/news" exact component={News} />
                             </Switch>
                         </ContentView>
                     </NavigationView>
@@ -68,9 +71,9 @@ const Header = () => {
     return (
         <React.Fragment>
             <Divider />
-            <div style={{ backgroundColor: COLORS.PRIMARY_DARK, height: 100 }} >
-                <Title color="white" centered>Template Renyx</Title>
-            </div>
+                <Title color="white" centered>YaqueApp</Title>
+            {/* <div style={{ backgroundColor: COLORS.PRIMARY_DARK, height: 100 }} >
+            </div> */}
         </React.Fragment>
     )
 }

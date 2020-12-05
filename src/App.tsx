@@ -12,7 +12,7 @@ function App() {
   }
   const [context, setContext] = useState<IGlobalContext>({
     user: { fullname: "" },
-    logged: false,
+    logged: true,
     setContext: auxSetContext
   })
 

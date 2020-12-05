@@ -21,7 +21,7 @@ interface iTextField {
     disabled?: boolean,
 }
 
-function TextField(props: iTextField) {
+function CustomTextField(props: iTextField) {
 
     const _onChange = (e: any) => {
         if (props.onChange && props.name) {
@@ -54,4 +54,4 @@ function TextField(props: iTextField) {
     )
 }
 
-export default TextField;
+export default CustomTextField;

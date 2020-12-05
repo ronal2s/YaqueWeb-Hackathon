@@ -1,4 +1,7 @@
 import styled from '@emotion/styled'
+import { Fab } from '@material-ui/core';
+import { Add } from '@material-ui/icons';
+import React from 'react';
 import { Drawer_size } from '../utils/constants';
 import { COLORS } from '../utils/enums';
 
@@ -111,6 +114,19 @@ const Separator = styled.div((props: { size?: number }) => ({
     marginTop: props.size ? `${props.size}px` : "10px"
 }))
 
+interface IFabButton {
+    onClick: () => void
+}
+
+const FabButton = (props: IFabButton) => {
+    return (
+        <Fab color="primary"
+            style={{ position: "absolute", bottom: 10, right: 10 }} onClick={props.onClick} >
+            <Add />
+        </Fab>
+    )
+}
+
 
 export {
     RowView,
@@ -120,5 +136,6 @@ export {
     Title,
     Subtitle,
     Body, Separator,
-    Content, View, SquareView
+    Content, View, SquareView,
+    FabButton
 }

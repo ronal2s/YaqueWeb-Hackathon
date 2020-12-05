@@ -4,6 +4,7 @@ import "firebase/auth";
 import "firebase/firestore";
 
 import { Collections, Documents } from "../utils/enums";
+import { IFNews } from '../utils/interfaces';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBXnVrMt6dqx9mFtprP97vvsjTCSOMPzL0",
@@ -38,3 +39,43 @@ export const getData = async () => {
 export const authenticate = (email: string, password: string) => {
     return firebase.auth().signInWithEmailAndPassword(email, password);
 };
+
+export const pushNews = async (post: IFNews) => {
+    let obj = await (await db.collection(Collections.NEWS).doc(Documents.DATA).get()).data();
+    console.log(obj)
+    if (!obj) {
+        // obj = {
+        //     data: []
+        // }
+        obj = []
+    } else {
+        const keysObject = Object.keys(obj);
+        const auxObjects = { ...obj };
+        obj = [];
+        keysObject.forEach(key => {
+            //@ts-ignore
+            obj.push(auxObjects[key])
+        })
+    }
+    console.log("Data: ", obj)
+    // obj.data.push(post);
+    obj.push(post);
+    return db.collection(Collections.NEWS).doc(Documents.DATA).set({ ...obj });
+    // const _post = { ...post };
+    // const storageUser = firebase.storage().ref(`news/${code}`);
+    // if (post.uri !== "") {
+    //     const img = await storageUser.put()
+    // }
+}
+
+export const getNews = async () => {
+    let obj: any = await (await db.collection(Collections.NEWS).doc(Documents.DATA).get()).data() as object;
+    const keysObject = Object.keys(obj);
+    const auxObjects = { ...obj };
+    obj = [];
+    keysObject.forEach(key => {
+        //@ts-ignore
+        obj.push(auxObjects[key])
+    })
+    return obj;
+}
