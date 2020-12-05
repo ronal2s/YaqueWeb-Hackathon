@@ -24,6 +24,7 @@
     "date-fns": "^2.16.1",
     "express": "^4.17.1",
     "firebase": "^7.19.1",
+    "google-map-react": "^2.1.9",
     "i18next": "^19.7.0",
     "i18next-browser-languagedetector": "^6.0.1",
     "material-table": "^1.64.0",
