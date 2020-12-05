@@ -1,16 +1,24 @@
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Grid, IconButton, Typography } from "@material-ui/core";
-import { Check, CheckCircle } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, CircularProgress, Grid, IconButton, Typography } from "@material-ui/core";
+import { Check, CheckCircle } from "@material-ui/icons";
+//Utils
 import { Content, Separator, Title, View } from "../../globalStyles";
-import { getDb } from "../../service/firestore";
 import { Collections, COLORS, Documents, Keys } from "../../utils/enums";
 import { IFPost } from "../../utils/interfaces";
+import ModalViewMore from "./modalViewMore"
+//Service
+import { getDb } from "../../service/firestore";
+import models from "../../utils/models";
 
 function Home(props: any) {
+    const [modals, setModals] = useState({ viewMore: false });
     const [data, setData] = useState([]);
     const [highCards, setHighCards] = useState([]);
     const [medCards, setMedCards] = useState([]);
     const [lowCards, setLowCards] = useState([]);
+    const [selectedPost, setSelectedPost] = useState<IFPost>({...models.report});
+    const [ loading, setLoading ] = useState(true); 
+    
 
     useEffect(() => {
         observerPosts();
@@ -27,7 +35,7 @@ function Home(props: any) {
                 let _high: any = []; let _med: any = []; let _low: any = [];
                 for (let i = keysObject.length - 1; i >= 0; i--) {
                     const element: IFPost = auxObjects[keysObject[i]];
-                    if(!element.solved) {
+                    if (!element.solved) {
                         if (element.priority === Keys.HIGH) {
                             _high.push(element);
                         } else if (element.priority === Keys.MED) {
@@ -35,8 +43,8 @@ function Home(props: any) {
                         } else {
                             _low.push(element);
                         }
+                        _data.push(auxObjects[keysObject[i]])
                     }
-                    // _data.push(auxObjects[keysObject[i]])
                 }
                 // console.log("Datos: ", (_data as IFPost[]).sort((a, b) => a.date - b.date))
                 console.log("Items: ", _data)
@@ -48,61 +56,92 @@ function Home(props: any) {
                 setMedCards((_med as IFPost[]).sort((a, b) => b.date - a.date));
                 //@ts-ignore
                 setLowCards((_low as IFPost[]).sort((a, b) => b.date - a.date));
+                setLoading(false);
             }
         })
     }
+
+    const openModal = (name: string) => {
+        setModals({...modals, [name]: true});
+    }
+
+    const closeModal = (name: string) => {
+        setModals({...modals, [name]: false});
+    }
+
+    const onViewMore = (post: IFPost) => {
+        setSelectedPost(post);
+        openModal("viewMore");
+    }
+
+    const onSolved = () => {
+        
+    }
+    
+    
+
     return (
         <View>
             <Title color={COLORS.PRIMARY}  >Reportes</Title>
             <Separator />
-            <Title color={COLORS.HIGH_PRIORITY}  size={24}  >Prioridad Alta</Title>
+            <Title color={COLORS.HIGH_PRIORITY} size={24}  >Prioridad Alta</Title>
+            {loading && <CircularProgress/>}
             <Grid container spacing={1} >
                 {highCards.map((post, key) => {
                     return (
-                        <CardReport {...post} key={key} />
+                        <CardReport post={post} onSolved={onSolved} onViewMore={onViewMore} key={key} />
                     )
                 })}
             </Grid>
-            <Title color={COLORS.MED_PRIORITY}  size={24} >Prioridad Media</Title>
+            <Title color={COLORS.MED_PRIORITY} size={24} >Prioridad Media</Title>
+            {loading && <CircularProgress/>}
             <Grid container spacing={1} >
                 {medCards.map((post, key) => {
                     return (
-                        <CardReport {...post} key={key} />
+                        <CardReport post={post} onSolved={onSolved} onViewMore={onViewMore} key={key} />
                     )
                 })}
             </Grid>
-            <Title color={COLORS.LOW_PRIORITY}  size={24} >Prioridad Baja</Title>
+            <Title color={COLORS.LOW_PRIORITY} size={24} >Prioridad Baja</Title>
+            {loading && <CircularProgress/>}
             <Grid container spacing={1} >
                 {lowCards.map((post, key) => {
                     return (
-                        <CardReport {...post} key={key} />
+                        <CardReport post={post} onSolved={onSolved} onViewMore={onViewMore} key={key} />
                     )
                 })}
             </Grid>
+            <ModalViewMore open={modals.viewMore} onClose={() => closeModal("viewMore")} allPosts={data} post={selectedPost as IFPost} />
         </View>
     )
 }
 
+interface ICardReport {
+    post: IFPost,
+    onViewMore: (post: IFPost) => void,
+    onSolved: (post: IFPost) => void,
 
-const CardReport = (props: IFPost) => {
+}
+
+const CardReport = (props: ICardReport) => {
     return (
         <Grid item sm={4}>
             {/* <Card  > */}
-            <Card style={{ height: props.picture !== "" ? 449.859 : 200 }} >
-                <CardHeader avatar={<Avatar>{props.user.name[0]}</Avatar>} title={props.user.name} subheader={new Date(props.date).toDateString()} />
-                <CardMedia image={props.picture} style={{
+            <Card style={{ height: props.post.picture !== "" ? 449.859 : 200 }} >
+                <CardHeader avatar={<Avatar>{props.post.user.name[0]}</Avatar>} title={props.post.user.name} subheader={new Date(props.post.date).toDateString()} />
+                <CardMedia image={props.post.picture} style={{
                     height: 0,
                     paddingTop: '56.25%'
                 }} />
                 <CardContent>
                     <Typography variant="body2" color="textSecondary" component="p">
-                        {(props.title).substring(0, 100) + "..."}
+                        {(props.post.title).substring(0, 100) + "..."}
                     </Typography>
                 </CardContent>
-                <CardActions style={{justifyContent: "space-between"}} >
-                    <Button>Ver más</Button>
+                <CardActions style={{ justifyContent: "space-between" }} >
+                    <Button onClick={() => props.onViewMore(props.post)} >Ver más</Button>
                     <IconButton>
-                        <CheckCircle/>
+                        <CheckCircle />
                     </IconButton>
                 </CardActions>
             </Card>

@@ -5,7 +5,7 @@ import "firebase/firestore";
 import "firebase/storage";
 
 import { Collections, Documents } from "../utils/enums";
-import { IFNews } from '../utils/interfaces';
+import { IFNews, IFPost } from '../utils/interfaces';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBXnVrMt6dqx9mFtprP97vvsjTCSOMPzL0",
@@ -107,4 +107,8 @@ export const getNews = async () => {
         obj.push(auxObjects[key])
     })
     return obj;
+}
+
+export const updateReports = async (reports: IFPost[]) => {
+    return await db.collection(Collections.REPORTS).doc(Documents.DATA).update({ ...reports });
 }

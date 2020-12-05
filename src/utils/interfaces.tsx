@@ -16,7 +16,7 @@ export interface IFPost {
         longitudeDelta: number,
         latitudeDelta: number,
         latitude: number,
-        longitude: number,    
+        longitude: number,
     },
     // latitude: string,
     // longitude: string,
@@ -27,4 +27,8 @@ export interface IFPost {
     comments: {
         id: string, userId: string, text: string, name: string, verified?: boolean
     }[] | []
+}
+
+export interface IFComment {
+    id: string, userId: string, text: string, name: string, verified?: boolean
 }
