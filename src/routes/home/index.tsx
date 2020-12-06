@@ -7,8 +7,9 @@ import { Collections, COLORS, Documents, Keys } from "../../utils/enums";
 import { IFPost } from "../../utils/interfaces";
 import ModalViewMore from "./modalViewMore"
 //Service
-import { getDb } from "../../service/firestore";
+import { getDb, updateReports } from "../../service/firestore";
 import models from "../../utils/models";
+import { toast } from "react-toastify";
 
 function Home(props: any) {
     const [modals, setModals] = useState({ viewMore: false });
@@ -74,8 +75,23 @@ function Home(props: any) {
         openModal("viewMore");
     }
 
-    const onSolved = () => {
-        
+    const onSolved = async (post: IFPost) => {        
+        const id = post.id;
+        const _allPosts: IFPost[] = [...data];
+        for (let i = 0; i < _allPosts.length; i++) {
+            const el: IFPost = _allPosts[i];
+            if (el.id === id) {
+                _allPosts[i].solved = true;
+                break;
+            }
+        }
+
+        try {
+            await updateReports(_allPosts);
+            toast.success("Reporte actualizado");
+        } catch (error) {
+            toast.error(error.message);
+        }
     }
     
     
@@ -140,7 +156,7 @@ const CardReport = (props: ICardReport) => {
                 </CardContent>
                 <CardActions style={{ justifyContent: "space-between" }} >
                     <Button onClick={() => props.onViewMore(props.post)} >Ver más</Button>
-                    <IconButton>
+                    <IconButton onClick={() => props.onSolved(props.post)} >
                         <CheckCircle />
                     </IconButton>
                 </CardActions>

@@ -130,9 +130,9 @@ function ModalPost(props: IModalPost) {
             <DialogActions>
                 <DialogActions>
                     <Button color="secondary" onClick={props.onClose} >Cerrar</Button>
-                    <Button color="primary" variant="contained" onClick={onSolved} >
+                    {/* <Button color="primary" variant="contained" onClick={onSolved} >
                         Solucionado
-                </Button>
+                </Button> */}
                 </DialogActions>
             </DialogActions>
         </Dialog>
