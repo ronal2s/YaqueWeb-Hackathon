@@ -68,7 +68,7 @@ function ModalPost(props: IModalPost) {
     const goToLocation = () => {
         window.open(`https://www.google.com/maps/search/${props.post.region.latitude},+${props.post.region.longitude}/@${props.post.region.latitude},${props.post.region.longitude},17z`)
     }
-    
+
 
     return (
         <Dialog open={props.open} onClose={props.onClose} fullWidth maxWidth="sm" >
@@ -85,20 +85,25 @@ function ModalPost(props: IModalPost) {
                     <DialogContentText>
                         {props.post.description}
                         <br />
-                        <div style={{ height: 400, width: "100%" }}>
-                            <GoogleMapReact
-                                bootstrapURLKeys={{ key: "AIzaSyAyHYyijB8VhsVv0LnIxMxFvbYn5u1Koo4" }}
-                                // defaultCenter={this.props.center}
-                                defaultCenter={{ lat: props.post.region.latitude, lng: props.post.region.longitude }}
-                                defaultZoom={15}
-                            >
-                                <AnyReactComponent
-                                    lat={props.post.region.latitude}
-                                    lng={props.post.region.longitude}
-                                />
-                            </GoogleMapReact>
-                        </div>
-                        <Button onClick={goToLocation} >Ir a la ubicación</Button>
+                        {props.post.region.latitude &&
+                            <div>
+
+                                <div style={{ height: 400, width: "100%" }}>
+                                    <GoogleMapReact
+                                        bootstrapURLKeys={{ key: "AIzaSyAyHYyijB8VhsVv0LnIxMxFvbYn5u1Koo4" }}
+                                        // defaultCenter={this.props.center}
+                                        defaultCenter={{ lat: props.post.region.latitude, lng: props.post.region.longitude }}
+                                        defaultZoom={15}
+                                    >
+                                        <AnyReactComponent
+                                            lat={props.post.region.latitude}
+                                            lng={props.post.region.longitude}
+                                        />
+                                    </GoogleMapReact>
+                                </div>
+                                <Button onClick={goToLocation} >Ir a la ubicación</Button>
+                            </div>
+                        }
                     </DialogContentText>
                     {(props.post.comments as IFComment[]).map((comment: IFComment, key: number) => {
                         return (
@@ -126,7 +131,7 @@ function ModalPost(props: IModalPost) {
                 <DialogActions>
                     <Button color="secondary" onClick={props.onClose} >Cerrar</Button>
                     <Button color="primary" variant="contained" onClick={onSolved} >
-                        Resuelto
+                        Solucionado
                 </Button>
                 </DialogActions>
             </DialogActions>

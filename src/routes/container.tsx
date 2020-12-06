@@ -9,6 +9,7 @@ import {
 //Screens
 import Home from "./home";
 import News from "./news";
+import Records from "./record";
 //Custom components
 import CustomAppBar from '../components/appbar';
 import CustomLink from '../components/listItem';
@@ -47,8 +48,8 @@ function App({ t }: any) {
                         <Divider />
                         <List>
                             <CustomLink title={t("Inicio")} icon="mail" iconColor="white" nameView="/" actualRoute={actualRoute} onClick={onClickItem} />
-                            <CustomLink title={t("Ejemplo")} icon="mail" iconColor="white" nameView="/reports" actualRoute={actualRoute} onClick={onClickItem} />
                             <CustomLink title={t("Noticias")} icon="mail" iconColor="white" nameView="/news" actualRoute={actualRoute} onClick={onClickItem} />
+                            <CustomLink title={t("Historial")} icon="mail" iconColor="white" nameView="/records" actualRoute={actualRoute} onClick={onClickItem} />
                         </List>
                     </CustomDrawer>
                     <NavigationView>
@@ -57,6 +58,7 @@ function App({ t }: any) {
                             <Switch>
                                 <Route path="/" exact component={Home} />
                                 <Route path="/news" exact component={News} />
+                                <Route path="/records" exact component={Records} />
                             </Switch>
                         </ContentView>
                     </NavigationView>

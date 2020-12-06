@@ -129,10 +129,10 @@ const CardReport = (props: ICardReport) => {
             {/* <Card  > */}
             <Card style={{ height: props.post.picture !== "" ? 449.859 : 200 }} >
                 <CardHeader avatar={<Avatar>{props.post.user.name[0]}</Avatar>} title={props.post.user.name} subheader={new Date(props.post.date).toDateString()} />
-                <CardMedia image={props.post.picture} style={{
+                {props.post.picture !== "" && <CardMedia image={props.post.picture} style={{
                     height: 0,
                     paddingTop: '56.25%'
-                }} />
+                }} />}
                 <CardContent>
                     <Typography variant="body2" color="textSecondary" component="p">
                         {(props.post.title).substring(0, 100) + "..."}

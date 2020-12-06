@@ -14,7 +14,8 @@ import IRecord from "./index.d";
 import { Title } from "../../globalStyles";
 import { getData, getDb } from "../../service/firestore";
 import ModalImage from "./modalPicture";
-import { Documents, Collections } from "../../utils/enums";
+import { Documents, Collections, Keys } from "../../utils/enums";
+import { IFPost } from "../../utils/interfaces";
 
 function Rent({ t }: any) {
     const [loading, setLoading] = useState(false);
@@ -22,29 +23,31 @@ function Rent({ t }: any) {
     const [modalItems, setModalsItems] = useState(false);
     const [image, setImage] = useState("");
 
-    const [data, setdata] = useState([]);
+    const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        observerPosts();
+    }, [])
 
-    const fetchData = () => {
+    const observerPosts = async () => {
+        getDb().collection(Collections.REPORTS).doc(Documents.DATA).onSnapshot(observer => {
+            if (observer.data()) {
+                console.log("Dentro")
+                //@ts-ignore
+                const keysObject = Object.keys(observer.data());
+                const auxObjects = { ...observer.data() };
+                let _data: any = [];
+                let _high: any = []; let _med: any = []; let _low: any = [];
+                for (let i = keysObject.length - 1; i >= 0; i--) {
+                    const element: IFPost = auxObjects[keysObject[i]];
 
-        setLoading(true);
-        getDb().collection(Collections.REPORTS).doc(Documents.DATA).onSnapshot((result: any) => {
-            let data: any = result.data();
-            if (data) {
-                data = data.data;
-                console.log("Data fetch", data)
-                setdata(data);
+                    _data.push({ ...auxObjects[keysObject[i]], solved: auxObjects[keysObject[i]].solved ? "Sí" : "No" })
+                }
+                //@ts-ignore
+                setData((_data as IFPost[]).sort((a, b) => b.solved - a.solved));
                 setLoading(false);
             }
         })
-    }
-
-    const seePhoto = (e: any, rowData: any) => {
-        setModalsItems(true);
-        setImage(rowData.picture)
     }
 
     return (
@@ -54,19 +57,21 @@ function Rent({ t }: any) {
                     <Paper>
                         <MaterialTable
                             style={{ width: isMobile() ? 350 : "100%" }}
-                            title=""
+                            title="Reportes"
                             options={{
                                 exportButton: true,
-                                search: false
+                                search: true
                             }}
                             columns={[
-                                // { title: t("Sector"), field: "sector" },
-                                // { title: t("Calle"), field: "street" },
+                                { title: t("Título"), field: "title" },
+                                { title: t("Prioridad"), field: "priority" },
+                                { title: t("Usuario"), field: "user.name" },
+                                { title: t("Solucionado"), field: "solved" },
                                 // { title: t("¿Primera vez?"), field: "firstTime" },
                             ]}
                             isLoading={loading}
                             data={data}
-                            onRowClick={seePhoto}
+                        // onRowClick={seePhoto}
                         />
                     </Paper>
                 </Grid>
