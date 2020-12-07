@@ -39,6 +39,10 @@ function App({ t }: any) {
         setRoute(name);
     }
 
+    const onLogout = () => {
+        globalContext.setContext({ ...globalContext, logged: false })
+    }
+
     return (
         <Router>
             <React.Fragment >
@@ -53,7 +57,7 @@ function App({ t }: any) {
                         </List>
                     </CustomDrawer>
                     <NavigationView>
-                        <CustomAppBar title={window.location.pathname} onMenuPress={handleDrawer} drawerOpened={drawer} />
+                        <CustomAppBar title={window.location.pathname} onMenuPress={handleDrawer} drawerOpened={drawer} onLogout={onLogout} />
                         <ContentView>
                             <Switch>
                                 <Route path="/" exact component={Home} />
@@ -73,7 +77,8 @@ const Header = () => {
     return (
         <React.Fragment>
             <Divider />
-                <Title color="white" centered>YaqueApp</Title>
+            <Title color="white" centered>Yaque</Title>
+            <Title color="white" centered>Rescate</Title>
             {/* <div style={{ backgroundColor: COLORS.PRIMARY_DARK, height: 100 }} >
             </div> */}
         </React.Fragment>

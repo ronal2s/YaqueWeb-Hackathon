@@ -24,6 +24,8 @@ function Rent({ t }: any) {
     const [image, setImage] = useState("");
 
     const [data, setData] = useState([]);
+    const [dataPerPriority, setDtaPerPriority] = useState([]);
+    const [dataPerSolved, setDataPerSolved] = useState([]);
 
     useEffect(() => {
         observerPosts();
@@ -32,7 +34,15 @@ function Rent({ t }: any) {
     const observerPosts = async () => {
         getDb().collection(Collections.REPORTS).doc(Documents.DATA).onSnapshot(observer => {
             if (observer.data()) {
-                console.log("Dentro")
+                const chartQ1 = [
+                    { label: t("Alta"), value: 0 },
+                    { label: t("Media"), value: 0 },
+                    { label: t("Baja"), value: 0 },
+                ];
+                const chartQ2 = [
+                    { label: t("Solucionado"), value: 0 },
+                    { label: t("No Solucionado"), value: 0 },
+                ];
                 //@ts-ignore
                 const keysObject = Object.keys(observer.data());
                 const auxObjects = { ...observer.data() };
@@ -40,9 +50,30 @@ function Rent({ t }: any) {
                 let _high: any = []; let _med: any = []; let _low: any = [];
                 for (let i = keysObject.length - 1; i >= 0; i--) {
                     const element: IFPost = auxObjects[keysObject[i]];
-
-                    _data.push({ ...auxObjects[keysObject[i]], solved: auxObjects[keysObject[i]].solved ? "Sí" : "No" })
+                    _data.push({ ...auxObjects[keysObject[i]], solved: auxObjects[keysObject[i]].solved ? "Sí" : "No" });
+                    if (auxObjects[keysObject[i]].priority === "Alta") {
+                        chartQ1[0].value++;
+                        chartQ1[0].label = `Alta ${((chartQ1[0].value/keysObject.length)*100).toFixed(1)}%`;
+                    } else if (auxObjects[keysObject[i]].priority === "Media") {
+                        chartQ1[1].value++;
+                        chartQ1[1].label = `Media ${((chartQ1[1].value/keysObject.length)*100).toFixed(1)}%`;
+                    } else {
+                        chartQ1[2].value++;
+                        chartQ1[2].label = `Baja ${((chartQ1[2].value/keysObject.length)*100).toFixed(1)}%`;
+                    }
+                    
+                    
+                    if (auxObjects[keysObject[i]].solved) {
+                        chartQ2[0].value++;
+                        chartQ2[0].label = `Solucionado ${((chartQ2[0].value/keysObject.length)*100).toFixed(1)}%`;
+                    } else {
+                        chartQ2[1].value++;
+                        chartQ2[1].label = `No Solucionado ${((chartQ2[1].value/keysObject.length)*100).toFixed(1)}%`;
+                    }
                 }
+
+                //@ts-ignore
+                setDtaPerPriority(chartQ1); setDataPerSolved(chartQ2);
                 //@ts-ignore
                 setData((_data as IFPost[]).sort((a, b) => b.solved - a.solved));
                 setLoading(false);
@@ -67,6 +98,7 @@ function Rent({ t }: any) {
                                 { title: t("Prioridad"), field: "priority" },
                                 { title: t("Usuario"), field: "user.name" },
                                 { title: t("Solucionado"), field: "solved" },
+                                { title: t("Fecha"), render: (row: any) => new Date(row.date).toLocaleDateString("en") },
                                 // { title: t("¿Primera vez?"), field: "firstTime" },
                             ]}
                             isLoading={loading}
@@ -74,6 +106,20 @@ function Rent({ t }: any) {
                         // onRowClick={seePhoto}
                         />
                     </Paper>
+                </Grid>
+                <Grid item sm={6} xs={12} >
+                    <Title>{t("Reportes por prioridad")}</Title>
+                    <Chart data={dataPerPriority} >
+                        <Legend />
+                        <PieSeries valueField="value" argumentField="label" />
+                    </Chart>
+                </Grid>
+                <Grid item sm={6} xs={12} >
+                    <Title>{t("Reportes solucionados")}</Title>
+                    <Chart data={dataPerSolved} >
+                        <Legend />
+                        <PieSeries valueField="value" argumentField="label" />
+                    </Chart>
                 </Grid>
                 <ModalImage open={modalItems} img={image} onClose={() => setModalsItems(false)} />
             </Grid>

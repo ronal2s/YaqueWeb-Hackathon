@@ -82,7 +82,7 @@ function ModalPost(props: IModalPost) {
                             paddingTop: '56.25%'
                         }} />
                     </Grid>
-                    <DialogContentText>
+                    <DialogContentText style={{width: "100%"}} >
                         {props.post.description}
                         <br />
                         {props.post.region.latitude &&
